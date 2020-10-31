@@ -48,17 +48,19 @@ const sketch = ({ context }) => {
   const fragmentShader = /* glsl */ `
     varying vec2 vUv;
     uniform float time;
-
+    uniform vec3 color;
 
     void main () {
       vec2 center = vec2(0.5);
 
-      vec2 pos = mod(vUv * 8.0, 1.0);
+      vec2 pos = mod(vUv * 5.0, 1.0);
 
       float dist = distance(pos, center);
-      float mask = dist > 0.25 ? 0.0 : 1.0;
+      float mask = step(0.25 + sin(time + vUv.x) * 0.25, dist);
 
-      gl_FragColor = vec4(vec3(mask), 1.0);
+      vec3 fragColor = mix(color, color - vec3(0.3), mask);
+
+      gl_FragColor = vec4(vec3(fragColor), 1.0);
     }
   `;
 
